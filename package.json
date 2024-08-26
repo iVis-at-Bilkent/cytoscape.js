@@ -1,6 +1,6 @@
 {
   "name": "cytoscape",
-  "version": "3.3.0",
+  "version": "3.2.16",
   "license": "MIT",
   "description": "Graph theory (a.k.a. network) library for analysis and visualisation",
   "homepage": "http://js.cytoscape.org",
@@ -138,9 +138,6 @@
       "/build/cytoscape.js"
     ],
     "first": "images"
-  },
-  "overrides": {
-    "graceful-fs": "^4.2.11"
   },
   "dependencies": {
     "heap": "^0.2.6",
