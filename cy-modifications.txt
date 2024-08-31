@@ -153,3 +153,43 @@ Also use 'ahmetcandiroglu/canvas2svg' instead of 'kinimesi/canvas2svg#master'.
 Note: In sbgnviz renderer drawBorder() function of extensions/renderer/canvas/drawing-nodes.js
 is copied and updated because of the reasons explained there. If the function here is updated
 update the one in sbgnviz renderer as well.
+
+
+%-------------------------------------------------------------%
+%                         Line Dash Pattern SUPPORT           %
+%-------------------------------------------------------------%
+
+See: https://github.com/iVis-at-Bilkent/cytoscape.js/commit/f69f8198558a13ee69465c56c70692c01b433eab
+
+Changes made:
+In src/style/properties.js the following lines were added:
+
+    { name: 'line-fill', type: t.fill },
+    { name: 'line-cap', type: t.lineCap },
+    { name: 'line-dash-pattern', type: t.numbers },
+    { name: 'line-dash-offset', type: t.number },
+ 
+    'line-dash-pattern': [6, 3],
+    'line-dash-offset': 0,
+
+In src/extensions/renderer/canvas/drawing-edges.js the following lines were added:
+    let lineDashPattern = edge.pstyle('line-dash-pattern').pfValue;
+    let lineDashOffset = edge.pstyle('line-dash-offset').pfValue;
+
+    canvasCxt.setLineDash( lineDashPattern );
+    canvasCxt.lineDashOffset = lineDashOffset;
+
+  The following line was deleted:
+    canvasCxt.setLineDash( [ 6, 3 ] );
+
+dist/cytoscape.cjs.js,  dist/cytoscape.js, and dist/cytoscape.min.js files were changed accourdingly
+by running "gulp dist" command
+
+src/version.js was also modified accourdingly
+
+For more details see: https://github.com/cytoscape/cytoscape.js/pull/2163
+
+
+
+
+

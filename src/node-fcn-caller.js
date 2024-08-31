@@ -26,6 +26,7 @@ caller.intersectLine = function( node, x, y, render ) {
   }
   else {
     var pos = node.position();
+    //console.log("caller.intersectLine ", shape)
     intersect = shape.intersectLine(
       pos.x, pos.y, node.outerWidth(), node.outerHeight(), x, y, 0
     );

@@ -2766,6 +2766,7 @@ caller.intersectLine = function (node, x, y, render) {
     intersect = shape.intersectLine(node, x, y);
   } else {
     var pos = node.position();
+    //console.log("caller.intersectLine ", shape)
     intersect = shape.intersectLine(pos.x, pos.y, node.outerWidth(), node.outerHeight(), x, y, 0);
   }
 
@@ -4946,7 +4947,7 @@ var styfn = {};
   { name: 'position', type: t.position }, { name: 'compound-sizing-wrt-labels', type: t.compoundIncludeLabels }, { name: 'min-width', type: t.size }, { name: 'min-width-bias-left', type: t.sizeMaybePercent }, { name: 'min-width-bias-right', type: t.sizeMaybePercent }, { name: 'min-height', type: t.size }, { name: 'min-height-bias-top', type: t.sizeMaybePercent }, { name: 'min-height-bias-bottom', type: t.sizeMaybePercent },
 
   // edge line
-  { name: 'line-style', type: t.lineStyle }, { name: 'line-color', type: t.color }, { name: 'curve-style', type: t.curveStyle }, { name: 'haystack-radius', type: t.zeroOneNumber }, { name: 'source-endpoint', type: t.edgeEndpoint }, { name: 'target-endpoint', type: t.edgeEndpoint }, { name: 'control-point-step-size', type: t.size }, { name: 'control-point-distances', type: t.bidirectionalSizes }, { name: 'control-point-weights', type: t.numbers }, { name: 'segment-distances', type: t.bidirectionalSizes }, { name: 'segment-weights', type: t.numbers }, { name: 'edge-distances', type: t.edgeDistances }, { name: 'arrow-scale', type: t.positiveNumber }, { name: 'loop-direction', type: t.angle }, { name: 'loop-sweep', type: t.angle }, { name: 'source-distance-from-node', type: t.size }, { name: 'target-distance-from-node', type: t.size },
+  { name: 'line-style', type: t.lineStyle }, { name: 'line-color', type: t.color }, { name: 'line-fill', type: t.fill }, { name: 'line-cap', type: t.lineCap }, { name: 'line-dash-pattern', type: t.numbers }, { name: 'line-dash-offset', type: t.number }, { name: 'curve-style', type: t.curveStyle }, { name: 'haystack-radius', type: t.zeroOneNumber }, { name: 'source-endpoint', type: t.edgeEndpoint }, { name: 'target-endpoint', type: t.edgeEndpoint }, { name: 'control-point-step-size', type: t.size }, { name: 'control-point-distances', type: t.bidirectionalSizes }, { name: 'control-point-weights', type: t.numbers }, { name: 'segment-distances', type: t.bidirectionalSizes }, { name: 'segment-weights', type: t.numbers }, { name: 'edge-distances', type: t.edgeDistances }, { name: 'arrow-scale', type: t.positiveNumber }, { name: 'loop-direction', type: t.angle }, { name: 'loop-sweep', type: t.angle }, { name: 'source-distance-from-node', type: t.size }, { name: 'target-distance-from-node', type: t.size },
 
   // ghost properties
   { name: 'ghost', type: t.bool }, { name: 'ghost-offset-x', type: t.bidirectionalSize }, { name: 'ghost-offset-y', type: t.bidirectionalSize }, { name: 'ghost-opacity', type: t.zeroOneNumber },
@@ -5139,7 +5140,9 @@ styfn.getDefaultProperties = util.memoize(function () {
     'source-distance-from-node': 0,
     'target-distance-from-node': 0,
     'source-endpoint': 'outside-to-node',
-    'target-endpoint': 'outside-to-node'
+    'target-endpoint': 'outside-to-node',
+    'line-dash-pattern': [6, 3],
+    'line-dash-offset': 0
   }, [{ name: 'arrow-shape', value: 'none' }, { name: 'arrow-color', value: '#999' }, { name: 'arrow-fill', value: 'filled' }].reduce(function (css, prop) {
     styfn.arrowPrefixes.forEach(function (prefix) {
       var name = prefix + '-' + prop.name;
@@ -10935,6 +10938,15 @@ var boundingBoxImpl = function boundingBoxImpl(ele, options) {
         var multimerPadding = baseNodeShapes[shape].multimerPadding;
         ex2 += multimerPadding;
         ey2 += multimerPadding;
+      }
+
+      if (sbgn.isActive(ele)) {
+        var shape = ele.css('shape');
+        var activePadding = baseNodeShapes[shape].activePadding;
+        ex2 += activePadding;
+        ey2 += activePadding;
+        ex1 -= activePadding;
+        ey1 -= activePadding;
       }
 
       if (minY < ey1) {
@@ -22712,6 +22724,11 @@ BRp.getLabelText = function (ele, prefix) {
     var ellipsis = '\u2026';
     var incLastCh = false;
 
+    if (this.calculateLabelDimensions(ele, text).width < maxW) {
+      // the label already fits
+      return text;
+    }
+
     for (var i = 0; i < text.length; i++) {
       var widthWithNextCh = this.calculateLabelDimensions(ele, ellipsized + text[i] + ellipsis).width;
 
@@ -27123,6 +27140,8 @@ CRp.drawEdgePath = function (edge, context, pts, type) {
   var path = void 0;
   var pathCacheHit = false;
   var usePaths = this.usePaths();
+  var lineDashPattern = edge.pstyle('line-dash-pattern').pfValue;
+  var lineDashOffset = edge.pstyle('line-dash-offset').pfValue;
 
   if (usePaths) {
     var pathCacheKey = pts.join('$');
@@ -27146,7 +27165,8 @@ CRp.drawEdgePath = function (edge, context, pts, type) {
         break;
 
       case 'dashed':
-        canvasCxt.setLineDash([6, 3]);
+        canvasCxt.setLineDash(lineDashPattern);
+        canvasCxt.lineDashOffset = lineDashOffset;
         break;
 
       case 'solid':
@@ -29291,7 +29311,7 @@ module.exports = Stylesheet;
 "use strict";
 
 
-module.exports = "snapshot-cdd43d002d-1544774551224";
+module.exports = "snapshot-543f0ace17-1658923577349";
 
 /***/ })
 /******/ ]);
