@@ -2900,28 +2900,28 @@ module.exports = __webpack_require__(36);
 
 // storage for parsed queries
 var newQuery = function newQuery() {
-  return {
-    classes: [],
-    colonSelectors: [],
-    data: [],
-    group: null,
-    ids: [],
-    meta: [],
+    return {
+        classes: [],
+        colonSelectors: [],
+        data: [],
+        group: null,
+        ids: [],
+        meta: [],
 
-    // fake selectors
-    collection: null, // a collection to match against
-    filter: null, // filter function
+        // fake selectors
+        collection: null, // a collection to match against
+        filter: null, // filter function
 
-    // these are defined in the upward direction rather than down (e.g. child)
-    // because we need to go up in Selector.filter()
-    parent: null, // parent query obj
-    ancestor: null, // ancestor query obj
-    subject: null, // defines subject in compound query (subject query obj; points to self if subject)
+        // these are defined in the upward direction rather than down (e.g. child)
+        // because we need to go up in Selector.filter()
+        parent: null, // parent query obj
+        ancestor: null, // ancestor query obj
+        subject: null, // defines subject in compound query (subject query obj; points to self if subject)
 
-    // use these only when subject has been defined
-    child: null,
-    descendant: null
-  };
+        // use these only when subject has been defined
+        child: null,
+        descendant: null
+    };
 };
 
 module.exports = newQuery;
@@ -4841,7 +4841,7 @@ var styfn = {};
     textBackgroundShape: { enums: ['rectangle', 'roundrectangle'] },
     nodeShape: { enums: ['rectangle', 'roundrectangle', 'cutrectangle', 'bottomroundrectangle', 'barrel', 'ellipse', 'triangle', 'square', 'pentagon', 'hexagon', 'concavehexagon', 'heptagon', 'octagon', 'tag', 'star', 'diamond', 'vee', 'rhomboid', 'polygon'] },
     compoundIncludeLabels: { enums: ['include', 'exclude'] },
-    arrowShape: { enums: ['tee', 'triangle', 'triangle-tee', 'triangle-cross', 'triangle-backcurve', 'half-triangle-overshot', 'vee', 'square', 'circle', 'diamond', 'none'] },
+    arrowShape: { enums: ['tee', 'triangle', 'triangle-tee', 'triangle-cross', 'triangle-backcurve', 'half-triangle-overshot', 'vee', 'square', 'circle', 'diamond', 'chevron', 'none'] },
     arrowFill: { enums: ['filled', 'hollow'] },
     display: { enums: ['element', 'none'] },
     visibility: { enums: ['hidden', 'visible'] },
@@ -21518,6 +21518,13 @@ BRp.registerArrowShapes = function () {
       return edge.pstyle('width').pfValue * edge.pstyle('arrow-scale').value;
     }
   });
+
+  defineArrowShape('chevron', {
+    points: [0, 0, -0.15, -0.15, -0.1, -0.2, 0, -0.1, 0.1, -0.2, 0.15, -0.15],
+    gap: function gap(edge) {
+      return 0.95 * edge.pstyle('width').pfValue * edge.pstyle('arrow-scale').value;
+    }
+  });
 };
 
 module.exports = BRp;
@@ -31290,7 +31297,7 @@ module.exports = Stylesheet;
 "use strict";
 
 
-module.exports = "snapshot-543f0ace17-1658923577349";
+module.exports = "snapshot-1b05a1a172-1752742175707";
 
 /***/ })
 /******/ ]);
